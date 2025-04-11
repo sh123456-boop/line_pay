@@ -1,0 +1,3 @@
+@ManyToOne과 @OnetoMany 관계
+fetch, cascade, orphanRemoval
+joincolumn
