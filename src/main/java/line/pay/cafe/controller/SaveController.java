@@ -1,8 +1,9 @@
 package line.pay.cafe.controller;
 
-import line.pay.cafe.dto.ItemRequestDto;
-import line.pay.cafe.dto.OrderDto;
-import line.pay.cafe.dto.SaveRequestDto;
+import jakarta.validation.Valid;
+import line.pay.cafe.dto.request.ItemRequestDto;
+import line.pay.cafe.dto.request.OrderRequestDto;
+import line.pay.cafe.dto.request.SaveRequestDto;
 import line.pay.cafe.service.SaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,10 @@ public class SaveController {
     private final SaveService saveService;
 
     @PostMapping("/domain")
-    public String save(@RequestBody SaveRequestDto saveRequestDto) {
-        OrderDto orderDto = saveRequestDto.getOrderDto();
-        ItemRequestDto itemDto = saveRequestDto.getItemDto();
-        saveService.save(orderDto);
+    public String save(@Valid @RequestBody SaveRequestDto saveRequestDto) {
+        OrderRequestDto orderRequestDto = saveRequestDto.getOrderRequestDto();
+        ItemRequestDto itemRequestDto = saveRequestDto.getItemRequestDto();
+        saveService.save(orderRequestDto);
         return "OK";
     }
 

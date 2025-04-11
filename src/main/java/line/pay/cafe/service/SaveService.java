@@ -1,7 +1,10 @@
 package line.pay.cafe.service;
 
 import line.pay.cafe.domain.*;
-import line.pay.cafe.dto.*;
+import line.pay.cafe.dto.request.MerchantRequestDto;
+import line.pay.cafe.dto.request.OrderItemRequestDto;
+import line.pay.cafe.dto.request.OrderRequestDto;
+import line.pay.cafe.dto.request.PayRequestDto;
 import line.pay.cafe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,11 +27,11 @@ public class SaveService {
 
 
     //orderDto와 order를 통해 orderItem생성
-    public static List<OrderItem> createOrderItems(Order order, List<OrderItemDto> orderItemDtos, ItemRepository itemRepository) {
+    public static List<OrderItem> createOrderItems(Order order, List<OrderItemRequestDto> orderItemRequestDtos, ItemRepository itemRepository) {
         List<OrderItem> list = new ArrayList<>();
 
 
-        for( OrderItemDto dto : orderItemDtos) {
+        for( OrderItemRequestDto dto : orderItemRequestDtos) {
             OrderItem orderItem1 = new OrderItem();
 
             //아이템 저장
@@ -45,17 +48,17 @@ public class SaveService {
     }
 
     //MerchantDto와 order를 통해 merchant생성
-    public static  Merchant createMerchant(MerchantDto merchantDto, Order order) {
-        Merchant merchant = new Merchant(null, merchantDto.getName(), merchantDto.getBusinessNumber(), LocalDateTime.now());
+    public static  Merchant createMerchant(MerchantRequestDto merchantRequestDto, Order order) {
+        Merchant merchant = new Merchant(null, merchantRequestDto.getName(), merchantRequestDto.getBusinessNumber(), LocalDateTime.now());
         //연관관계 메서드
         order.setMerchant(merchant);
         return merchant;
     }
 
     //PayDto와 order를 통해 pay 생성
-    public static Pay createPay(Order order, List<PayDto> payDto) {
+    public static Pay createPay(Order order, List<PayRequestDto> payRequestDto) {
         Pay pay = new Pay();
-        for (PayDto dto : payDto) {
+        for (PayRequestDto dto : payRequestDto) {
             pay.setAmount(dto.getAmount());
             pay.setCardInfo(dto.getCardInfo());
             pay.setPaymentMethod(dto.getPaymentMethod());
@@ -64,24 +67,24 @@ public class SaveService {
         return pay;
     }
 
-    public void save(OrderDto orderDto) {
+    public void save(OrderRequestDto orderRequestDto) {
         //order 생성 및 저장
-        Order order = orderDto.toEntity(orderDto.getTotalPrice());
+        Order order = orderRequestDto.toEntity(orderRequestDto.getTotalPrice());
         //연관관계 주입 후 order 저장
         orderRepository.save(order);
 
         //orderItem 생성 및 저장
-        List<OrderItem> orderItems = SaveService.createOrderItems(order, orderDto.getOrderItemDtos(), itemRepository);
+        List<OrderItem> orderItems = SaveService.createOrderItems(order, orderRequestDto.getOrderItemRequestDtos(), itemRepository);
         for (OrderItem orderItem : orderItems) {
             orderItemRepository.save(orderItem);
         }
 
         //merchant 생성 및 저장
-        Merchant merchant = SaveService.createMerchant(orderDto.getMerchantDto(), order);
+        Merchant merchant = SaveService.createMerchant(orderRequestDto.getMerchantRequestDto(), order);
         merchantRepository.save(merchant);
 
         //pay 생성 및 저장
-        Pay pay = SaveService.createPay(order, orderDto.getPayDto());
+        Pay pay = SaveService.createPay(order, orderRequestDto.getPayRequestDto());
         payRepository.save(pay);
     }
 

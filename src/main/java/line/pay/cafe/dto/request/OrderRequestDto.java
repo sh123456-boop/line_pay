@@ -1,22 +1,27 @@
-package line.pay.cafe.dto;
+package line.pay.cafe.dto.request;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import line.pay.cafe.domain.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderDto {
-    private List<OrderItemDto> orderItemDtos;
-    private List<PayDto> payDto;
-    private MerchantDto merchantDto;
+public class OrderRequestDto {
+
+    @NotNull
+    @Valid
+    private List<OrderItemRequestDto> orderItemRequestDtos;
+    private List<PayRequestDto> payRequestDto;
+    private MerchantRequestDto merchantRequestDto;
 
     private BigDecimal totalPrice;
 

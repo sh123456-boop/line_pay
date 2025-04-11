@@ -1,4 +1,4 @@
-package line.pay.cafe.dto;
+package line.pay.cafe.dto.request;
 
 import line.pay.cafe.domain.Item;
 import lombok.Getter;
